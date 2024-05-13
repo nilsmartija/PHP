@@ -38,6 +38,31 @@ return  $con->query($query)->fetch();
         return $con->prepare("INSERT INTO user_address (user_id, user_add_city, user_add_province, user_add_street, user_add_barangay) VALUES (?, ?, ?, ?, ?)")
             ->execute([$user_id, $city, $province, $street, $barangay]);
     }
+
+    function view ()
+    {
+        $con = $this->opencon();
+        return $con->query("SELECT user.user_id, user.username, user.passwords, user.firstname, user.lastname, user.birthday, user.sex, CONCAT(user_address.user_add_street,' ', user_address.user_add_barangay,' ', user_address.user_add_city,' ', user_address.user_add_province) AS address FROM user JOIN user_address ON user.user_id=user_address.user_id;")
+        ->fetchALL();
+    }
+    function delete($id)
+    {
+        try {
+            $con = $this->opencon();
+            $con->beginTransaction();
+
+            $qeury = $con->prepare("DELETE FROM user_address WHERE user_id =?");
+            $qeury->execute([$id]);
+
+            $query2 = $con->prepare("DELETE FROM user WHERE user_id =?");
+            
+            $con->commit();
+            return true;
+        } catch(PDOException $e) {
+            $con->rollBack();
+            return false;
+        }
+    }
 }
 
  
