@@ -67,7 +67,7 @@ return  $con->query($query)->fetch();
           function viewdata($id) {
               try {
                  $con = $this->opencon();
-                 $query = $con->prepare("SELECT user.user_id, user.username, user.passwords, user.firstname, user.lastname, user.birthday, user.sex, user_address.user_add_street, user_address.user_add_barangay, user_address.user_add_city, user_address.user_add_province FROM user JOIN user_address ON user.user_id=user_address.user_id; WHERE user.user_id = ?");
+                 $query = $con->prepare("SELECT user.user_id, user.username, user.passwords, user.firstname, user.lastname, user.birthday, user.sex, user_address.user_add_street, user_address.user_add_barangay, user_address.user_add_city, user_address.user_add_province FROM user JOIN user_address ON user.user_id=user_address.user_id WHERE user.user_id = ?");
                  $query->execute([$id]);
                  return $query->fetch();
                } catch(PDOException $e) {
@@ -82,8 +82,8 @@ return  $con->query($query)->fetch();
             $con ->beginTransaction();
             $query = $con->prepare("UPDATE user SET firstname=?, lastname=?, birthday=?, sex=?, username=?, passwords=? WHERE user_id=?");
             $query->execute([$firstName, $lastName, $birthday, $sex, $username, $password, $user_id]);
-
             $con ->commit();
+            return true;
         } catch(PDOException $e) {
             $con->rollBack();
             return false;
@@ -96,8 +96,8 @@ function updateUserAddress($user_id, $street, $barangay, $city, $province ) {
         $con ->beginTransaction();
         $query = $con->prepare("UPDATE useraddress SET street=?, barangay=?, city=?, province=? WHERE user_id=?");
         $query->execute([$street, $barangay, $city, $province, $user_id]);
-
         $con ->commit();
+        return true;
     } catch(PDOException $e) {
         $con->rollBack();
         return false;
