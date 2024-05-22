@@ -15,7 +15,7 @@ if(isset($_POST['login'])) {
     if($result){
         if ($result['username'] == $_POST['username'] && $result['password'] == $_POST['passwords']) {
             $_SESSION['username'] = $result['username'];
-            header('location:index.php');
+            header('location:register.php');
     }
     else { echo "error";}
        
